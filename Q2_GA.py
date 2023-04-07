@@ -264,7 +264,7 @@ if __name__=="__main__":
                 print('Current Best Goal',"%.3f"%alloEpoch[epoch,0])
                 print('Current Max Goal',"%.3f"%alloTarget[np.argmax(alloTarget[:,0]),0])
                 nodePercent = np.dot(bestBlockAllo,blockInfo[:,1])/nodeLimit
-                #print('Node storage usage',nodePercent)
+                # print('Node storage usage',nodePercent)
             
             #选择个体 进行交叉变异
             idx = select(alloFit, selectSize=alloNum) 
