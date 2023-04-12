@@ -1,18 +1,7 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import random
-from matplotlib import rcParams
 import math
 
-np.random.seed(1037)
-random.seed(1037)
-
-'''
-约束条件判断
-输入 区块分配方案 blockAllo
-输出 True False
-其中 blockInfo blockBackups nodeLimit storageLimit 为全局变量,条件可选
-'''
 def constraint(blockAllo, condition = -1): #-1代表所有条件,0-2代表条件1-3
     if(condition == -1):
         constraint_result = np.full(3, False, dtype=bool)  #三个约束的结果 默认全False
@@ -33,29 +22,22 @@ def constraint(blockAllo, condition = -1): #-1代表所有条件,0-2代表条件
     elif(condition == 2):
         return np.sum(blockAllo.sum(axis=0)*blockInfo[:,1])/np.sum(nodeLimit)<=storageLimit
 
-'''随机生成区块 按照备份数量生成'''
-def generate_initial_state(blockBackupsUpper):
+def initial_solution():
     blockAllo = np.zeros((nodeNum,blockNum)).astype(bool)
-    blockBackupsUpper = blockBackupsUpper+1
-    #blockBackupsUpper = int(blockBackups*2)
 
     while(np.all(constraint(blockAllo))==False):
         blockAllo = np.zeros((nodeNum,blockNum)).astype(bool)
         for block in range(blockNum):
-            nodeChoice = random.sample(range(nodeNum), np.random.randint(blockBackups,blockBackupsUpper))
+            nodeChoice = random.sample(range(nodeNum), np.random.randint(blockBackups,blockBackups+1))
             blockAllo[nodeChoice,block] = True
-        #print(constraint(blockAllo))
-        
     return blockAllo
 
-# 计算状态的能量，即系统存储平衡度
-def calculate_energy(state):
+def cost_function(state):
     nodeBlockCost = np.zeros((nodeNum,blockNum)) #节点访问区块的代价,行代表节点,列代表区块
     for node in range(nodeNum):
         for block in range(blockNum):
             nodeBlockCost[node,block] = np.min(costAll[block,state[:,block]==1,node]) #选出通信成本最小的节点所需成本
     nodeRatio = np.dot(state,blockInfo[:,1])/nodeLimit #节点存储空间占总空间的比例
-    print(nodeRatio)
     #nodeVar = np.var(nodeRatio)
     nodeProportion = (np.exp(5*nodeRatio)-1)/(np.exp(5)-1) #按照指定函数对空间占用率进行处理
     
@@ -66,73 +48,54 @@ def calculate_energy(state):
     # result = np.array([nodeBlockCostAvg+nodeProportionAvg, nodeBlockCostAvg, nodeProportionAvg])
     return nodeBlockCostAvg + nodeProportionAvg
 
-# 生成一个邻居状态，即随机选择一个区块，然后将其从一个随机节点移动到另一个随机节点上
-def get_neighbour(state):
-    # 最大占用节点移动到最小节点
-    # node_usage = np.dot(state,blockInfo[:,1])/nodeLimit
-    # node_max = np.argmax(node_usage)
-    # node_min = np.argmin(node_usage)
+def simulated_annealing(initial_temp=0.1, cooling_rate=0.99999, min_temp=0.001, max_iterations=10000):
 
-    # neighbour = state.copy()
-    # one_indices = np.where(neighbour[node_max]==1)[0]
-    # if one_indices.size > 0:
-    #     random_index = np.random.choice(one_indices)
-    #     neighbour[node_max,random_index] = 0
-    # one_indices = np.where(neighbour[node_min]==0)[0]
-    # random_index = np.random.choice(one_indices)
-    # neighbour[node_min,random_index] = 1
-    
-    # 重新随机分配一个区块
-    random_block_num = np.random.randint(0, blockNum)
-    neighbour = state.copy()
-    neighbour[:,random_block_num] = 0
-    
-    idx = np.random.choice(np.arange(state.shape[0]) ,size = np.random.randint(blockBackups,blockBackups+1), replace=False)
-    neighbour[idx,random_block_num] = 1
-    while(np.all(constraint(state)) == False):
-        neighbour[:,random_block_num] = 0    
-        random_block_num = np.random.randint(0, blockNum)
-        idx = np.random.choice(np.arange(state.shape[0]) ,size = np.random.randint(blockBackups,blockBackups+1), replace=False)
-        neighbour[:,random_block_num] = 0
-        neighbour[idx, random_block_num] = 1
+    current_solution = initial_solution()
+    current_cost = cost_function(current_solution)
 
-    # 重新随机分配一个区块
-    # random_block_num = np.random.randint(0, blockNum)
-    # neighbour = state.copy()
-    # neighbour[:,random_block_num] = 0
-    # idx = np.random.choice(np.arange(state.shape[0]) ,size = np.random.randint(blockBackups,blockBackups+1), replace=False)
+    best_solution = current_solution
+    best_cost = current_cost
 
+    temp = initial_temp
 
-    #TODO add constraint
-    return neighbour
+    while temp > min_temp:
+        for _ in range(max_iterations):
+            # 生成新解
+            random_block_num = np.random.randint(0, blockNum)
+            new_solution = current_solution.copy()
+            new_solution[:,random_block_num] = 0
+            idx = np.random.choice(np.arange(new_solution.shape[0]) ,size = np.random.randint(blockBackups,blockBackups+1), replace=False)
+            new_solution[idx,random_block_num] = 1
 
+            while(np.all(constraint(new_solution)) == False):
+                new_solution[:,random_block_num] = 0    
+                random_block_num = np.random.randint(0, blockNum)
+                idx = np.random.choice(np.arange(new_solution.shape[0]) ,size = np.random.randint(blockBackups,blockBackups+1), replace=False)
+                new_solution[:,random_block_num] = 0
+                new_solution[idx, random_block_num] = 1
 
-# 模拟退火算法
-def simulated_annealing(initial_state, initial_temperature, final_temperature, cooling_rate):
-    best_energy = 100
-    current_state = initial_state
-    current_energy = calculate_energy(current_state)
-    temperature = initial_temperature
-    while temperature > final_temperature:
-        neighbour = get_neighbour(current_state)
-        neighbour_energy = calculate_energy(neighbour)
-        energy_delta = neighbour_energy - current_energy
-        if energy_delta < 0:
-            current_state = neighbour
-            current_energy = neighbour_energy
-        else:
-            probability = math.exp(-energy_delta / temperature)
-            print(probability)
-            print(random.random())
-            if random.random() < probability:
-                current_state = neighbour
-                current_energy = neighbour_energy
-        temperature *= cooling_rate
-        if current_energy > best_energy:
-            best_energy = current_energy
-        print(current_energy)
-    print("best_energy:",best_energy)
-    return current_state
+            new_cost = cost_function(new_solution)
+            print(new_cost)
+            print(current_cost)
+            print("1111")
+
+            # print(math.exp((current_cost - new_cost) / temp))
+            # print(random.random())
+            # print("111")
+
+            if new_cost < current_cost or math.exp((current_cost - new_cost) / temp) > random.random():
+                current_solution = new_solution
+                current_cost = new_cost
+
+                if new_cost < best_cost:
+                    best_solution = new_solution
+                    best_cost = new_cost
+        print("Temperature: {}, best cost: {}".format(temp, best_cost))
+
+        temp *= cooling_rate
+
+    return best_solution
+
 
 if __name__=="__main__":
     blockNum = 100 #区块数量
@@ -190,14 +153,11 @@ if __name__=="__main__":
         costAll = (blockInfo[:,1]*blockInfo[:,2]).reshape((blockNum,1,1)) * nodeOptDis.reshape((1,nodeNum,nodeNum))
         '''退火算法'''
 
-        # 生成初始状态
-        initial_state = generate_initial_state(blockBackups+1)
-        print("Initial state: ", initial_state)
         # 使用模拟退火算法搜索最优状态
-        final_state = simulated_annealing(initial_state, INITIAL_TEMPERATURE, FINAL_TEMPERATURE, COOLING_RATE)
+        final_state = simulated_annealing()
         print("Final state: ", final_state)
         # 计算最优状态的能量
-        final_energy = calculate_energy(final_state)
+        final_energy = cost_function(final_state)
         print("Final energy: ", final_energy)
     
     if saveResult:
