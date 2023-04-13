@@ -1,17 +1,10 @@
-import numpy as np
 import torch
 
-# 生成NumPy数组
-x_np = np.random.rand(1000, 1000)
+# 分配一些GPU内存
+x = torch.randn(10000, 10000).cuda()
 
-# 将NumPy数组转换为PyTorch张量，并将其转移到GPU上
-x = torch.from_numpy(x_np).to('cuda')
+# 查询已经分配的GPU内存大小
+memory_allocated = torch.cuda.memory_allocated()
 
-# 在GPU上进行计算
-y = torch.sin(x)
-
-# 将结果从GPU上转移到CPU上，并转换为NumPy数组
-y_np = y.to('cpu').detach().numpy()
-
-# 输出结果
-print(y_np)
+# 打印结果
+print(memory_allocated)

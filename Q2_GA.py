@@ -74,7 +74,7 @@ def objective(blockAllo):
     #计算总目标时乘以 1/区块数量
     nodeBlockCostAvg = np.sum(nodeBlockCost)/(nodeNum*blockNum)
     nodeProportionAvg = np.sum(nodeProportion)/nodeNum*50
-    result = np.array([nodeBlockCostAvg+nodeProportionAvg, nodeBlockCostAvg, nodeProportionAvg])
+    result = np.array([nodeBlockCostAvg+nodeProportionAvg*node_cost_ratio, nodeBlockCostAvg, nodeProportionAvg*node_cost_ratio])
     return result
 
 '''计算个体的适应度'''
@@ -186,9 +186,10 @@ if __name__=="__main__":
     storageLimit = 0.65 #优化后系统总存储空间占比
     storageLimitLoad = 0.5 #从Q1加载的限制区块数据量
     alloNum = 10 #种群数量
-    epochNum = 10000 #迭代次数
+    epochNum = 1000 #迭代次数
     saveResult = True #是否保存数据 True False
     expfromQ1 = False
+    node_cost_ratio = 1
     
     #区块信息
     blockInfo = np.loadtxt('./Data/blockInfo{}.csv'.format(blockNum), delimiter=',')
@@ -304,8 +305,8 @@ if __name__=="__main__":
         #结果
         fig = plt.figure(figsize=(6,4), dpi= 300)
         plt.plot(range(epochNum+1), alloEpoch[:,0],'-',label='target value')
-        plt.plot(range(epochNum+1), alloEpoch[:,1],'-',label='communication cost')
-        plt.plot(range(epochNum+1), alloEpoch[:,2],'-',label='node storage proportion')
+        # plt.plot(range(epochNum+1), alloEpoch[:,1],'-',label='communication cost')
+        # plt.plot(range(epochNum+1), alloEpoch[:,2],'-',label='node storage proportion')
         plt.legend()
         # fig2 = plt.figure(figsize=(6,4), dpi= 300)
         # plt.plot(range(epochNum+1), alloEpoch[:,3],'-',label='node storage ratio variance')
