@@ -21,7 +21,7 @@ class Particle:
             self.best_position = torch.clone(position)
         self.best_cost = self.cost
 
-    def update_velocity(self, global_best_position,current_iteration, max_iterations, w_max=0.9, w_min=0.4,c1=2, c2=2):
+    def update_velocity(self, global_best_position,current_iteration, max_iterations, w_max=1.8, w_min=0.4,c1=2, c2=2):
         w = w_max - (w_max - w_min) * (current_iteration / max_iterations)
         r1, r2 = random.random(), random.random()
         cognitive = c1 * r1 * (self.best_position - self.position)
@@ -177,7 +177,7 @@ def pso(n_particles, n_iterations, fitness):
                 no_improvement_count = 0
             
             r = objective(global_best_position)
-            print(iteration,r)
+            # print(iteration,r)
             alloEpoch[iteration] = r
         return global_best_position
 
@@ -193,8 +193,8 @@ if __name__=="__main__":
     storageLimitLoad = 0.5 #从Q1加载的限制区块数据量
     saveResult = True #是否保存数据 True False
     expfromQ1 = False
-    n_particles = 5
-    n_iterations = 1000
+    n_particles = 10
+    n_iterations = 100
     node_cost_ratio = 1
 
     #区块信息
@@ -221,7 +221,7 @@ if __name__=="__main__":
     if (nodeBlockRatio<=blockBackups*1.2):
         print("storageLimit is too small, there's not enough space")    
     else:
-        alloEpoch = np.zeros((n_iterations+1,3)) #每轮训练的最优结果 总目标 通信成本 存储平衡度 
+        alloEpoch = np.zeros((n_iterations,3)) #每轮训练的最优结果 总目标 通信成本 存储平衡度 
         print('Storage optimization target is {}.'.format(storageLimit))
             #所有节点需要的花销shape=(blockNum,nodeNum,nodeNum)
 
@@ -242,7 +242,7 @@ if __name__=="__main__":
         final_solution = pso(n_particles=n_particles, n_iterations=n_iterations, fitness=fitness)
 
         fig = plt.figure(figsize=(6,4), dpi= 300)
-        plt.plot(range(n_iterations+1), alloEpoch[:,0],'-',label='target value')
+        plt.plot(range(n_iterations), alloEpoch[:,0],'-',label='target value')
         # plt.plot(range(n_iterations+1), alloEpoch[:,1],'-',label='communication cost')
         # plt.plot(range(n_iterations+1), alloEpoch[:,2],'-',label='node storage proportion')
         plt.legend()

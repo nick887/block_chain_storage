@@ -105,6 +105,7 @@ def simulated_annealing(initial_temp=0.1, cooling_rate=0.99999, min_temp=0.001, 
                 if new_cost < best_cost:
                     best_solution = new_solution
                     best_cost = new_cost
+        i+=1
         r = objective(best_solution) 
         print(i,r)
         alloEpoch[i] = r
@@ -125,7 +126,7 @@ if __name__=="__main__":
     INITIAL_TEMPERATURE = 0.1  # 初始温度
     FINAL_TEMPERATURE = 0.00000001  # 最终温度
     COOLING_RATE = 0.9  # 降温速率
-    epochNum = 1000 #迭代次数
+    epochNum = 100 #迭代次数
 
     #区块信息
     blockInfo = np.loadtxt('./Data/blockInfo{}.csv'.format(blockNum), delimiter=',')
