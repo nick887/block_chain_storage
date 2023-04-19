@@ -19,7 +19,7 @@ def evaluate(
     nodeNum=nodeNum,
     blockNum=blockNum,
     storageLimit=storageLimit,
-    n_iterations=int(n_iterations*0.05),
+    n_iterations=int(10),
     n_particles=n_particles,
     blockBackups=blockBackups,
     node_cost_ratio=node_cost_ratio,)
@@ -29,7 +29,7 @@ def evaluate(
         blockNum=blockNum,
         storageLimit=storageLimit, 
         alloNum=alloNum, 
-        epochNum=int(n_iterations * 0.95), 
+        epochNum=int(n_iterations - 10), 
         blockBackups=blockBackups, 
         node_cost_ratio=node_cost_ratio,
         best_solution=best_solution)

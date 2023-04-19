@@ -21,26 +21,26 @@ if __name__=="__main__":
         blockBackups=4, 
         node_cost_ratio=1)
 
-    # CA_epoch_result,_ = Q2_CA.evaluate(
-    #     nodeNum=nodeNum,
-    #     blockNum=blockNum,
-    #     storageLimit=0.65,
-    #     epochNum=iteration_num,
-    #     blockBackups=4,
-    #     initial_temp=0.1,
-    #     final_temp=0.0001,
-    #     cooling_rate=0.999999,
-    #     node_cost_ratio=1,)
+    CA_epoch_result,_ = Q2_CA.evaluate(
+        nodeNum=nodeNum,
+        blockNum=blockNum,
+        storageLimit=0.65,
+        epochNum=iteration_num,
+        blockBackups=4,
+        initial_temp=0.1,
+        final_temp=0.0001,
+        cooling_rate=0.999999,
+        node_cost_ratio=1,)
 
-    # PSO_epoch_result,_ = Q2_PSO.evaluate(
-        # time.time(),
-    #     nodeNum=nodeNum,
-    #     blockNum=blockNum,
-    #     storageLimit=0.65,
-    #     n_iterations=iteration_num,
-    #     n_particles=10,
-    #     blockBackups=4,
-    #     node_cost_ratio=1,)
+    PSO_epoch_result,_ = Q2_PSO.evaluate(
+        time.time(),
+        nodeNum=nodeNum,
+        blockNum=blockNum,
+        storageLimit=0.65,
+        n_iterations=iteration_num,
+        n_particles=10,
+        blockBackups=4,
+        node_cost_ratio=1,)
     PSO_GA_epoch_result,_ = Q2_PSO_GA.evaluate(
         nodeNum=nodeNum,
         blockNum=blockNum,
