@@ -102,7 +102,7 @@ if __name__=="__main__":
     nodeNum = 3 #节点数量
     storageLimit = 0.5 #优化后系统总存储空间占比
     alloNum = 10 #种群数量
-    epochNum = 1000 #迭代次数
+    epochNum = 100 #迭代次数
     blockBackups = 3 #区块备份数量 至少为1
     saveResult = True #是否保存数据
     

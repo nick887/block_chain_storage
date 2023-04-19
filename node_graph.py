@@ -71,7 +71,7 @@ for index in range(nodeNum):
             plt.plot((nodePos[node,1],nodePos[index,1]),(nodePos[node,2],nodePos[index,2]),'r')
 
 plt.scatter(nodePos[:,1],nodePos[:,2],s=100,marker='v')
-plt.show()
+fig.savefig('./Data/NodeInfo/nodeGraph-'+str(nodeNum)+'.png')
 
 
 

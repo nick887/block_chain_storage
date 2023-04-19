@@ -11,7 +11,7 @@ np.random.seed(1037)
 
 #%%
 #区块init
-blockNum = 1000 #区块数量
+blockNum = 200 #区块数量
 
 blockSize = np.random.randn(blockNum)+8 #区块大小,,正态分布,随机生成
 blockFre = np.random.rand(blockNum) #区块访问频率,随机生成
@@ -26,23 +26,6 @@ print(blockInfo)
 #blockInfo按列依次为 区块序号、区块大小、区块访问频率、区块生成时间参数
 np.savetxt('./Data/blockInfo'+str(blockNum)+'.csv', blockInfo, delimiter=',')
 
-#%%
-#节点init
-nodeNum = 3
-nodeLimit = np.random.rand(nodeNum)*500+200 #节点的存储空间
-communiCost = np.zeros((nodeNum,nodeNum)) #节点通信能力矩阵
-print(nodeCost)
-for i in range(nodeNum): #计算任意两个节点间的通信成本
-    for j in range(nodeNum):
-        if i==j:
-            communiCost[i,j] = 0
-        else:
-            communiCost[i,j] = nodeCost[i]+nodeCost[j]
-
-nodeInfo = np.vstack([np.arange(nodeNum),nodeLimit,communiCost]).T
-
-#nodeInfo按列依次为 节点序号、节点存储能力、节点到其他节点的通信成本
-np.savetxt('./Data/nodeInfo'+str(nodeNum)+'.csv', nodeInfo, delimiter=',')
 
 #%%
 #计算区块平均大小、节点平均大小、平均通信成本
