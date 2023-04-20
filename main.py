@@ -118,18 +118,18 @@ if __name__=="__main__":
 
     ax.plot(range(iteration_num+1), PSO_result[:,0],'-',label='PSO target')
     ax.plot(range(iteration_num+1), GA_result[:,0],'-',label='GA target')
-    ax.plot(range(iteration_num+1), CA_result[:,0],'-',label='CA target')
+    ax.plot(range(iteration_num+1), CA_result[:,0],'-',label='SA target')
     ax.legend()
 
     bx.plot(range(iteration_num+1), PSO_result[:,1],'-',label='PSO communication cost')
     bx.plot(range(iteration_num+1), GA_result[:,1],'-',label='GA communication cost')
-    bx.plot(range(iteration_num+1), CA_result[:,1],'-',label='CA communication cost')
+    bx.plot(range(iteration_num+1), CA_result[:,1],'-',label='SA communication cost')
     bx.legend()
 
 
     cx.plot(range(iteration_num+1), PSO_result[:,2],'-',label='PSO node storage proportion')
     cx.plot(range(iteration_num+1), GA_result[:,2],'-',label='GA node storage proportion')
-    cx.plot(range(iteration_num+1), CA_result[:,2],'-',label='CA node storage proportion')
+    cx.plot(range(iteration_num+1), CA_result[:,2],'-',label='SA node storage proportion')
     cx.legend()
 
     stacked = np.vstack((PSO_result, GA_result, CA_result))
@@ -147,17 +147,17 @@ if __name__=="__main__":
 
     axt.plot(PSO_result[PSO_result[:,3]<max_values,3], PSO_result[PSO_result[:,3]<max_values,0],'-',label='PSO target value')
     axt.plot(GA_result[GA_result[:,3]<max_values,3], GA_result[GA_result[:,3]<max_values,0],'-',label='GA target value')
-    axt.plot(CA_result[CA_result[:,3]<max_values,3], CA_result[CA_result[:,3]<max_values,0],'-',label='CA target value')
+    axt.plot(CA_result[CA_result[:,3]<max_values,3], CA_result[CA_result[:,3]<max_values,0],'-',label='SA target value')
     axt.legend()
 
     bxt.plot(PSO_result[PSO_result[:,3]<max_values,3], PSO_result[PSO_result[:,3]<max_values,1],'-',label='PSO communication cost')
     bxt.plot(GA_result[GA_result[:,3]<max_values,3], GA_result[GA_result[:,3]<max_values,1],'-',label='GA communication cost')
-    bxt.plot(CA_result[CA_result[:,3]<max_values,3], CA_result[CA_result[:,3]<max_values,1],'-',label='CA communication cost')
+    bxt.plot(CA_result[CA_result[:,3]<max_values,3], CA_result[CA_result[:,3]<max_values,1],'-',label='SA communication cost')
     bxt.legend()
 
     cxt.plot(PSO_result[PSO_result[:,3]<max_values,3], PSO_result[PSO_result[:,3]<max_values,2],'-',label='PSO node storage proportion')
     cxt.plot(GA_result[GA_result[:,3]<max_values,3], GA_result[GA_result[:,3]<max_values,2],'-',label='GA node storage proportion')
-    cxt.plot(CA_result[CA_result[:,3]<max_values,3], CA_result[CA_result[:,3]<max_values,2],'-',label='CA node storage proportion')
+    cxt.plot(CA_result[CA_result[:,3]<max_values,3], CA_result[CA_result[:,3]<max_values,2],'-',label='SA node storage proportion')
     cxt.legend()
 
     axc.plot(GA_worker10_result[GA_worker10_result[:,3]<max_values1,3], GA_worker10_result[GA_worker10_result[:,3]<max_values1,0],'-',label='GA workers 10 target value')
